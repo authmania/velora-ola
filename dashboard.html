@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Velora AI Academy - Dashboard</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="color-scheme" content="light only" />
+<meta name="description" content="Velora AI Academy - Your Earning Dashboard" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+html,body,div,span,h1,h2,h3,h4,h5,h6,p,a,img,ul,ol,li,form,label,table,tbody,thead,tr,th,td,article,aside,footer,header,nav,section{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
+*,*::before,*::after{box-sizing:border-box;}
+body{line-height:1;-webkit-text-size-adjust:none;min-height:100vh;min-width:320px;overflow-x:hidden;word-wrap:break-word;background:#08000f;}
+ol,ul{list-style:none;}
+input::-moz-focus-inner{border:0;padding:0}
+input[type="text"],input[type="email"],input[type="password"],input[type="tel"],select,textarea{-moz-appearance:none;-webkit-appearance:none;appearance:none}
+a{color:inherit;text-decoration:none;}
+::-webkit-scrollbar{width:0;height:0;}
+
+:root{
+  --bg:#08000f;
+  --card:#150429;
+  --card2:#1d0838;
+  --card-line:linear-gradient(180deg,rgba(147,51,234,0.16),rgba(217,70,239,0.05));
+  --purple:#7b2ff7;
+  --purple-deep:#4c0f96;
+  --pink:#e879f9;
+  --gold:#f6ad55;
+  --muted:rgba(226,215,245,0.56);
+  --text-soft:rgba(255,255,255,0.85);
+  --border:rgba(168,85,247,0.22);
+  --border2:rgba(255,255,255,0.06);
+  --glow:0 0 0 1px rgba(168,85,247,0.12),0 20px 50px -18px rgba(123,47,247,0.55);
+}
+
+/* ========================= DASHBOARD ========================= */
+#nextelDashboard{
+  display:none;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(123,47,247,0.22),transparent 42%),
+    radial-gradient(circle at 88% 18%,rgba(232,121,249,0.14),transparent 38%),
+    radial-gradient(circle at 50% 100%,rgba(76,15,150,0.25),transparent 55%),
+    var(--bg);
+  min-height:100vh;
+  font-family:'Poppins',sans-serif;
+  color:white;
+  padding-top:88px;
+  padding-bottom:118px;
+  overflow-x:hidden;
+}
+#nextelDashboard.is-ready .dash-wrap > *{animation:riseIn 0.55s cubic-bezier(.22,.9,.32,1) both;}
+#nextelDashboard.is-ready .dash-wrap > *:nth-child(1){animation-delay:.02s;}
+#nextelDashboard.is-ready .dash-wrap > *:nth-child(2){animation-delay:.06s;}
+#nextelDashboard.is-ready .dash-wrap > *:nth-child(3){animation-delay:.1s;}
+#nextelDashboard.is-ready .dash-wrap > *:nth-child(4){animation-delay:.16s;}
+#nextelDashboard.is-ready .dash-wrap > *:nth-child(5){animation-delay:.22s;}
+#nextelDashboard.is-ready .dash-wrap > *:nth-child(6){animation-delay:.28s;}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* HEADER */
+.nx-header{
+  position:fixed;top:0;left:0;width:100%;height:88px;
+  background:rgba(8,0,15,0.72);
+  backdrop-filter:blur(20px) saturate(140%);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;z-index:999;
+  border-bottom:1px solid var(--border2);
+}
+.nx-left{display:flex;align-items:center;gap:14px;}
+.nx-menu-btn{
+  width:46px;height:46px;border-radius:15px;
+  background:rgba(255,255,255,0.04);display:flex;align-items:center;
+  justify-content:center;border:1px solid var(--border2);
+  cursor:pointer;transition:background .2s,border-color .2s,transform .15s;
+}
+.nx-menu-btn:hover{background:rgba(168,85,247,0.12);border-color:var(--border);}
+.nx-menu-btn:active{transform:scale(0.94);}
+.nx-logo-text{font-family:'Unbounded';font-size:19px;font-weight:700;letter-spacing:0.2px;
+  background:linear-gradient(135deg,#fff,var(--pink) 120%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nx-profile{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  border:2px solid rgba(232,121,249,0.4);
+  box-shadow:0 0 0 3px rgba(123,47,247,0.12);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Poppins',sans-serif;font-weight:700;font-size:15px;color:#fff;
+  letter-spacing:0.3px;
+}
+
+/* MAIN WRAP */
+.dash-wrap{padding:6px 18px 0;width:100%;display:block;max-width:560px;margin:0 auto;}
+.live-date{font-size:12px;color:var(--muted);margin-bottom:4px;text-align:left;display:block;letter-spacing:0.4px;}
+.dash-greeting{font-size:23px;font-weight:700;margin-bottom:20px;text-align:left;display:block;color:var(--text-soft);}
+.dash-greeting span#dashName{
+  background:linear-gradient(135deg,#fff,var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* HERO BALANCE CARD */
+.hero-card{
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 15% -10%,rgba(255,255,255,0.22),transparent 45%),
+    radial-gradient(circle at 100% 0%,rgba(255,193,120,0.35),transparent 42%),
+    linear-gradient(150deg,#8b2ff0,#c026d3 55%,#6016b0);
+  padding:22px 20px;margin-bottom:22px;border-radius:28px;width:100%;
+  box-shadow:0 25px 60px -22px rgba(123,47,247,0.65);
+  border:1px solid rgba(255,255,255,0.12);
+}
+.hero-card::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,0.08),transparent 30%);
+}
+.hero-top-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+.hero-small{font-size:11px;letter-spacing:3px;color:rgba(26,0,51,0.75);text-align:left;font-weight:700;}
+.status-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:6px 13px 6px 10px;border-radius:999px;
+  font-size:11.5px;font-weight:700;white-space:nowrap;
+  background:rgba(26,0,51,0.16);color:#1a0033;
+  border:1px solid rgba(26,0,51,0.14);
+  transition:background .25s,color .25s,border-color .25s;
+}
+.status-dot{
+  position:relative;width:7px;height:7px;border-radius:50%;flex-shrink:0;
+  background:#ff4757;box-shadow:0 0 6px 1px rgba(255,71,87,0.8);
+}
+.status-dot::before,.status-dot::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:#ff4757;
+  animation:statusPing 1.4s cubic-bezier(0,0,0.35,1) infinite;
+}
+.status-dot::after{animation-delay:0.7s;}
+.status-pill.is-active{
+  background:rgba(26,0,51,0.85);color:#fff;border-color:transparent;
+}
+.status-pill.is-active .status-dot{
+  background:#34e89e;box-shadow:0 0 6px 1px rgba(52,232,158,0.8);
+}
+.status-pill.is-active .status-dot::before,
+.status-pill.is-active .status-dot::after{background:#34e89e;}
+@keyframes statusPing{
+  0%{transform:scale(1);opacity:0.8;}
+  100%{transform:scale(4.5);opacity:0;}
+}
+.hero-balance{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.hero-amount{font-size:32px;font-weight:800;color:#1a0033;letter-spacing:-0.5px;}
+.eye-btn{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(0,0,0,0.14);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:none;transition:background .2s;
+}
+.eye-btn:hover{background:rgba(0,0,0,0.22);}
+.hero-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.hero-mini{
+  background:rgba(255,255,255,0.16);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.22);
+  padding:12px 14px;border-radius:16px;
+  transition:background .2s;
+}
+.hero-mini-title{font-size:11.5px;text-align:left;color:rgba(26,0,51,0.72);margin-bottom:4px;line-height:1.3;font-weight:600;}
+.hero-mini-amount{font-size:16px;text-align:left;font-weight:800;color:#1a0033;line-height:1.2;}
+.hero-btns{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:4px;}
+.hero-btn{
+  height:38px;padding:0 15px;font-size:12px;border-radius:999px;
+  flex-shrink:0;border:none;font-weight:600;white-space:nowrap;cursor:pointer;
+  font-family:'Poppins',sans-serif;transition:transform .15s,opacity .15s;
+}
+.hero-btn:active{transform:scale(0.96);}
+.hero-btn.dark{background:rgba(26,0,51,0.88);color:#fff;}
+.hero-btn.outline{background:rgba(255,255,255,0.14);color:#1a0033;font-weight:700;border:1px solid rgba(255,255,255,0.3);}
+.activate-account-btn{
+  width:100%;margin-top:16px;
+  height:56px;border:none;border-radius:18px;
+  background:linear-gradient(135deg,#1a0033,#2b0052);
+  color:#fff;font-size:15px;font-weight:700;
+  cursor:pointer;font-family:'Poppins',sans-serif;
+  letter-spacing:0.2px;transition:transform .18s,box-shadow .18s;
+  box-shadow:0 12px 28px -10px rgba(0,0,0,0.55);
+  display:flex;align-items:center;justify-content:center;gap:9px;
+}
+.activate-account-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 16px 34px -10px rgba(0,0,0,0.6);}
+.activate-account-btn:active:not(:disabled){transform:translateY(0) scale(0.98);}
+.activate-account-btn:disabled{opacity:0.65;cursor:not-allowed;}
+
+/* SECTION TITLE */
+.section-lbl{
+  font-size:11px;text-align:left;letter-spacing:3px;
+  color:var(--muted);margin:6px 0 16px;font-weight:700;display:block;
+}
+
+/* USERS ROW */
+.users-row{display:flex;gap:16px;overflow-x:auto;padding:2px 2px 8px;margin-bottom:28px;}
+.users-row::-webkit-scrollbar{display:none;}
+.user-card{min-width:70px;text-align:center;}
+.user-photo{
+  width:64px;height:64px;border-radius:50%;
+  border:2px solid transparent;
+  background-image:linear-gradient(var(--card2),var(--card2)),linear-gradient(135deg,var(--pink),var(--purple));
+  background-origin:border-box;background-clip:padding-box,border-box;
+  background-size:cover;background-position:center;margin-bottom:8px;
+  box-shadow:0 6px 16px -6px rgba(123,47,247,0.5);
+}
+.user-name{font-size:11.5px;font-weight:600;margin-bottom:2px;color:rgba(255,255,255,0.85);}
+.user-amount{font-size:11.5px;font-weight:700;
+  background:linear-gradient(135deg,var(--pink),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* ACTION GRID */
+.action-grid{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;width:100%;margin-bottom:22px;
+}
+.action-card{
+  height:92px;border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015));
+  border:1px solid var(--border2);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:9px;cursor:pointer;
+  transition:transform .18s,border-color .18s,background .18s;
+}
+.action-card:hover{border-color:var(--border);background:linear-gradient(180deg,rgba(168,85,247,0.12),rgba(255,255,255,0.02));}
+.action-card:active{transform:scale(0.95);}
+.action-icon{
+  width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,rgba(232,121,249,0.18),rgba(123,47,247,0.18));
+}
+.action-text{font-size:10.5px;color:rgba(255,255,255,0.75);font-weight:600;}
+
+/* MUSIC PLAYER */
+.music-card{
+  position:relative;overflow:hidden;
+  margin:0 0 30px;padding:18px;border-radius:24px;
+  background:
+    radial-gradient(circle at top right,rgba(232,121,249,0.14),transparent 40%),
+    radial-gradient(circle at bottom left,rgba(123,47,247,0.14),transparent 40%),
+    var(--card);
+  border:1px solid var(--border);
+  box-shadow:var(--glow);
+}
+.music-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.music-cover{
+  width:56px;height:56px;border-radius:16px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 8px 20px -8px rgba(232,121,249,0.5);
+}
+.music-info{flex:1;padding:0 12px;}
+.music-title{font-size:14.5px;font-weight:700;color:white;line-height:1.3;}
+.music-artist{font-size:11.5px;color:var(--muted);margin-top:3px;}
+.music-progress{
+  height:5px;width:100%;
+  background:rgba(255,255,255,0.08);
+  border-radius:999px;overflow:hidden;margin-bottom:0;
+}
+.music-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--pink),var(--gold));
+  border-radius:999px;transition:.2s;
+}
+.music-play-btn{
+  width:40px;height:40px;border:none;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;transition:transform .15s;
+}
+.music-play-btn:active{transform:scale(0.92);}
+
+/* FOOTER NAV */
+.footer-nav{
+  position:fixed;bottom:0;left:0;width:100%;height:80px;
+  background:rgba(8,0,15,0.78);
+  backdrop-filter:blur(22px) saturate(140%);
+  -webkit-backdrop-filter:blur(22px) saturate(140%);
+  border-top:1px solid var(--border2);
+  display:flex;justify-content:space-around;align-items:center;
+  z-index:999;
+}
+.footer-item{
+  display:flex;flex-direction:column;align-items:center;
+  gap:5px;font-size:11px;color:rgba(226,215,245,0.45);cursor:pointer;font-weight:600;
+  transition:color .2s,transform .15s;padding:8px 14px;border-radius:14px;
+}
+.footer-item:active{transform:scale(0.92);}
+.footer-item.active{color:var(--pink);background:rgba(232,121,249,0.08);}
+
+/* SIDE MENU */
+.menu-overlay{
+  position:fixed;inset:0;background:rgba(4,0,10,0.65);
+  backdrop-filter:blur(6px);display:none;z-index:1000;
+}
+.side-menu{
+  position:fixed;top:0;left:-88%;width:84%;max-width:340px;height:100vh;
+  background:linear-gradient(165deg,#0d0219,#1a0033 60%,#0d0219);
+  z-index:1001;transition:left .35s cubic-bezier(.22,.9,.32,1);
+  border-right:1px solid var(--border);overflow-y:auto;
+  box-shadow:30px 0 60px -20px rgba(0,0,0,0.6);
+}
+.side-menu.active{left:0;}
+.menu-top{
+  padding:32px 22px 24px;display:flex;align-items:center;gap:14px;
+  border-bottom:1px solid var(--border2);
+  background:radial-gradient(circle at 20% 0%,rgba(232,121,249,0.12),transparent 60%);
+}
+.menu-avatar{
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  border:2px solid rgba(232,121,249,0.4);
+  box-shadow:0 0 0 3px rgba(123,47,247,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Poppins',sans-serif;font-weight:700;font-size:19px;color:#fff;
+  letter-spacing:0.3px;
+}
+.menu-name{font-size:17px;font-weight:700;color:#fff;}
+.menu-tier{margin-top:5px;font-size:12.5px;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:6px;}
+.menu-item{
+  height:64px;display:flex;align-items:center;gap:16px;
+  padding:0 22px;border-bottom:1px solid var(--border2);
+  cursor:pointer;font-size:14.5px;color:rgba(255,255,255,0.85);font-weight:500;
+  transition:background .18s,padding-left .18s;
+}
+.menu-item:hover{background:rgba(168,85,247,0.08);padding-left:26px;}
+.menu-item svg{flex-shrink:0;}
+.menu-item.logout{color:#ff7285;}
+
+/* LOADER */
+#dashLoader{
+  display:none;position:fixed;inset:0;
+  background:rgba(4,0,10,0.75);backdrop-filter:blur(6px);
+  z-index:9999;align-items:center;justify-content:center;
+}
+.dash-spinner{
+  width:44px;height:44px;
+  border:3px solid rgba(255,255,255,0.1);
+  border-top:3px solid var(--pink);
+  border-right:3px solid var(--purple);
+  border-radius:50%;animation:spin .9s linear infinite;
+}
+@keyframes spin{100%{transform:rotate(360deg);}}
+
+/* ========================= ACTIVATION POPUP ========================= */
+#nextelPopup{
+  position:fixed;inset:0;
+  background:rgba(4,0,10,0.7);backdrop-filter:blur(12px);
+  display:none;justify-content:center;align-items:center;
+  z-index:999999;font-family:'Poppins',sans-serif;padding:20px;
+}
+.popup-box{
+  width:100%;max-width:400px;
+  background:linear-gradient(165deg,#150429,#1d0838);
+  border-radius:26px;padding:30px 24px;
+  text-align:center;color:white;
+  box-shadow:0 30px 70px -20px rgba(0,0,0,0.65),var(--glow);
+  border:1px solid var(--border);
+  animation:popIn 0.3s cubic-bezier(.22,.9,.32,1);
+}
+@keyframes popIn{from{transform:scale(0.92) translateY(8px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+.popup-icon{
+  width:74px;height:74px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  display:flex;align-items:center;justify-content:center;margin:0 auto 20px;
+  box-shadow:0 12px 30px -8px rgba(232,121,249,0.55);
+}
+.popup-title{font-size:21px;font-weight:700;margin-bottom:10px;}
+.popup-text{font-size:13.5px;color:var(--muted);line-height:1.65;margin-bottom:24px;}
+.popup-btn{
+  width:100%;padding:16px;border-radius:16px;border:none;
+  font-weight:700;font-size:14.5px;cursor:pointer;
+  background:linear-gradient(135deg,var(--pink),var(--gold));
+  color:#1a0033;transition:transform .18s,box-shadow .18s;font-family:'Poppins',sans-serif;
+  box-shadow:0 14px 32px -12px rgba(232,121,249,0.6);
+}
+.popup-btn:hover:not(:disabled){transform:translateY(-2px);}
+.popup-btn:active:not(:disabled){transform:translateY(0) scale(0.98);}
+.popup-btn:disabled{opacity:0.6;cursor:not-allowed;}
+
+/* ========================= RESPONSIVE ========================= */
+@media(max-width:480px){
+  .form-card{padding:24px 16px;}
+  .pkg-option{padding:12px 12px;flex-wrap:wrap;}
+  .dash-wrap{padding:6px 14px 0;}
+  .action-grid{gap:8px;}
+}
+@media(min-width:560px){
+  .hero-card{padding:28px 26px;}
+  .hero-amount{font-size:36px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ========================= DASHBOARD ========================= -->
+<div id="nextelDashboard">
+
+  <!-- HEADER -->
+  <div class="nx-header">
+    <div class="nx-left">
+      <div class="nx-menu-btn" onclick="openMenu()">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="var(--gold)"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </div>
+      <div class="nx-logo-text">Velora</div>
+    </div>
+    <div class="nx-profile" id="headerProfile"></div>
+  </div>
+
+  <!-- MENU OVERLAY -->
+  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+  <!-- SIDE DRAWER -->
+  <div class="side-menu" id="sideMenu">
+    <div class="menu-top">
+      <div class="menu-avatar" id="menuAvatar"></div>
+      <div>
+        <div class="menu-name" id="menuUserName">User</div>
+        <div class="menu-tier" id="menuUserTier"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8L5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>Velora Member</div>
+      </div>
+    </div>
+    <div class="menu-item" onclick="closeMenu()">
+      <svg width="22" height="22" fill="var(--gold)" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Dashboard
+    </div>
+    <div class="menu-item" onclick="openActivation()">
+      <svg width="22" height="22" fill="var(--gold)" viewBox="0 0 24 24"><path d="M13 2L3 14h7v8l11-14h-7z"/></svg> Video Tasks
+    </div>
+    <div class="menu-item" onclick="openWithdrawal()">
+      <svg width="22" height="22" fill="var(--gold)" viewBox="0 0 24 24"><path d="M21 7H3V5h18m0 4H3v10h18"/></svg> Withdraw
+    </div>
+    <div class="menu-item" onclick="openProfile()">
+      <svg width="22" height="22" fill="var(--gold)" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.4 0-8 1.8-8 4v2h16v-2c0-2.2-3.6-4-8-4z"/></svg> My Profile
+    </div>
+    <div class="menu-item" onclick="contactSupport()">
+      <svg width="22" height="22" fill="var(--gold)" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg> Contact Support
+    </div>
+    <div class="menu-item logout" onclick="logoutUser()">
+      <svg width="22" height="22" fill="#ff7285" viewBox="0 0 24 24"><path d="M10 17l5-5-5-5v3H3v4h7v3z"/></svg> Log Out
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="dash-wrap">
+    <span class="live-date" id="liveDate"></span>
+    <span class="dash-greeting">Hey, <span id="dashName">User</span></span>
+
+    <!-- HERO CARD -->
+    <div class="hero-card">
+      <div class="hero-top-row">
+        <div class="hero-small">TOTAL EARNINGS</div>
+        <div class="status-pill" id="activationStatusBtn"><span class="status-dot"></span>Not Activated</div>
+      </div>
+      <div class="hero-balance">
+        <div class="hero-amount" id="mainBalance">&#8358;0</div>
+        <button class="eye-btn" onclick="toggleBalance()">
+          <svg width="20" height="20" fill="rgba(26,0,51,0.7)" viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7z"/></svg>
+        </button>
+      </div>
+      <div class="hero-mini-grid">
+        <div class="hero-mini">
+          <div class="hero-mini-title">Daily Call Earnings</div>
+          <div class="hero-mini-amount" id="dailyEarnings">&#8358;0.00</div>
+        </div>
+        <div class="hero-mini">
+          <div class="hero-mini-title">Referral Bonus</div>
+          <div class="hero-mini-amount" id="referralBonus">&#8358;0.00</div>
+        </div>
+      </div>
+      <div class="hero-btns">
+        <button class="hero-btn outline" onclick="openWithdrawal()">Withdrawal Limit</button>
+        <button class="hero-btn dark" onclick="openActivation()">How It Works</button>
+      </div>
+      <button class="activate-account-btn" id="activateAccountBtn" onclick="goToPayment()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm-3 8V6a3 3 0 016 0v3H9zm3 4a2 2 0 012 2c0 .74-.4 1.39-1 1.73V19h-2v-2.27c-.6-.34-1-.99-1-1.73a2 2 0 012-2z"/></svg>
+        Activate Your Account
+      </button>
+    </div>
+
+    <span class="section-lbl">RECENTLY CREDITED USERS</span>
+    <div class="users-row">
+      <div class="user-card"><div class="user-photo" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400')"></div><div class="user-name">Zinab</div><div class="user-amount">&#8358;83,200</div></div>
+      <div class="user-card"><div class="user-photo" style="background-image:url('https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400')"></div><div class="user-name">Favour</div><div class="user-amount">&#8358;52,000</div></div>
+      <div class="user-card"><div class="user-photo" style="background-image:url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400')"></div><div class="user-name">Sammy</div><div class="user-amount">&#8358;67,500</div></div>
+      <div class="user-card"><div class="user-photo" style="background-image:url('https://images.unsplash.com/photo-1504593811423-6dd665756598?q=80&w=400')"></div><div class="user-name">Peter</div><div class="user-amount">&#8358;41,000</div></div>
+      <div class="user-card"><div class="user-photo" style="background-image:url('https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=400')"></div><div class="user-name">Bolu</div><div class="user-amount">&#8358;93,700</div></div>
+      <div class="user-card"><div class="user-photo" style="background-image:url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400')"></div><div class="user-name">Kareem</div><div class="user-amount">&#8358;58,400</div></div>
+      <div class="user-card"><div class="user-photo" style="background-image:url('https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=400')"></div><div class="user-name">Amaka</div><div class="user-amount">&#8358;72,100</div></div>
+      <div class="user-card"><div class="user-photo" style="background-image:url('https://images.unsplash.com/photo-1463453091185-61582044d556?q=80&w=400')"></div><div class="user-name">Chinedu</div><div class="user-amount">&#8358;48,800</div></div>
+    </div>
+
+    <!-- ACTION GRID -->
+    <div class="action-grid">
+      <div class="action-card" onclick="openActivation()">
+        <div class="action-icon"><svg width="20" height="20" fill="var(--pink)" viewBox="0 0 24 24"><path d="M13 2L3 14h7v8l11-14h-7z"/></svg></div>
+        <div class="action-text">Earn</div>
+      </div>
+      <div class="action-card" onclick="openWithdrawal()">
+        <div class="action-icon"><svg width="20" height="20" fill="var(--pink)" viewBox="0 0 24 24"><path d="M21 7H3V5h18m0 4H3v10h18"/></svg></div>
+        <div class="action-text">Withdraw</div>
+      </div>
+      <div class="action-card" onclick="openActivation()">
+        <div class="action-icon"><svg width="20" height="20" fill="var(--pink)" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.48 2.48 0 000-1.39l7-4.11A2.99 2.99 0 0018 7.91a3 3 0 10-3-3c0 .23.03.45.08.66l-7 4.11a3 3 0 100 4.66l7.05 4.14c-.05.2-.08.42-.08.64a3 3 0 103-3z"/></svg></div>
+        <div class="action-text">Invite</div>
+      </div>
+      <div class="action-card" onclick="openProfile()">
+        <div class="action-icon"><svg width="20" height="20" fill="var(--pink)" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.4 0-8 1.8-8 4v2h16v-2c0-2.2-3.6-4-8-4z"/></svg></div>
+        <div class="action-text">Profile</div>
+      </div>
+    </div>
+
+    <!-- MUSIC PLAYER -->
+    <div class="music-card">
+      <div class="music-top">
+        <div style="display:flex;align-items:center;gap:14px;flex:1;">
+          <div class="music-cover">
+            <svg width="28" height="28" fill="#1a0033" viewBox="0 0 24 24"><path d="M12 3v10.5a3.5 3.5 0 101 2.45V8h6V3z"/></svg>
+          </div>
+          <div class="music-info">
+            <div class="music-title">Welcome To Velora</div>
+            <div class="music-artist">Official Dashboard Audio</div>
+          </div>
+        </div>
+        <button class="music-play-btn" id="musicToggle">
+          <svg id="musicIcon" width="18" height="18" fill="#1a0033" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
+      <div class="music-progress">
+        <div class="music-bar" id="musicBar"></div>
+      </div>
+      <audio id="dashMusic" loop>
+        <source src="assets/welcome-audio.mpeg" type="audio/mpeg">
+      </audio>
+    </div>
+
+  </div>
+
+  <!-- FOOTER NAV -->
+  <div class="footer-nav">
+    <div class="footer-item active">
+      <svg width="22" height="22" fill="var(--gold)" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      Home
+    </div>
+    <div class="footer-item" onclick="openActivation()">
+      <svg width="22" height="22" fill="#a78bda" viewBox="0 0 24 24"><path d="M13 2L3 14h7v8l11-14h-7z"/></svg>
+      Tasks
+    </div>
+    <div class="footer-item" onclick="openWithdrawal()">
+      <svg width="22" height="22" fill="#a78bda" viewBox="0 0 24 24"><path d="M21 7H3V5h18m0 4H3v10h18"/></svg>
+      Withdraw
+    </div>
+    <div class="footer-item" onclick="openActivation()">
+      <svg width="22" height="22" fill="#a78bda" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a2.48 2.48 0 000-1.39l7-4.11A2.99 2.99 0 0018 7.91a3 3 0 10-3-3c0 .23.03.45.08.66l-7 4.11a3 3 0 100 4.66l7.05 4.14c-.05.2-.08.42-.08.64a3 3 0 103-3z"/></svg>
+      Network
+    </div>
+    <div class="footer-item" onclick="openProfile()">
+      <svg width="22" height="22" fill="#a78bda" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.4 0-8 1.8-8 4v2h16v-2c0-2.2-3.6-4-8-4z"/></svg>
+      Profile
+    </div>
+  </div>
+
+  <!-- LOADER -->
+  <div id="dashLoader"><div class="dash-spinner"></div></div>
+
+</div>
+
+<!-- ========================= ACTIVATION POPUP ========================= -->
+<div id="nextelPopup" onclick="closePopup(event)">
+  <div class="popup-box" onclick="event.stopPropagation()">
+    <div class="popup-icon">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="#1a0033"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9h16v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm-3 8V6a3 3 0 016 0v3H9z"/></svg>
+    </div>
+    <div class="popup-title">Activate Your Account</div>
+    <div class="popup-text" id="popupText">You have earnings waiting. To withdraw funds and unlock all income streams, complete your one-time package activation.</div>
+    <button class="popup-btn" id="activateBtn">Activate Now &mdash; &#8358;10,000</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyDrnmtx0LkfMKytzTKQZwXCg1JKZXiJmtU",
+  authDomain:        "glamour-28049.firebaseapp.com",
+  projectId:         "glamour-28049",
+  storageBucket:     "glamour-28049.firebasestorage.app",
+  messagingSenderId: "22177815395",
+  appId:             "1:22177815395:web:2ca7caa2b1626299675156"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app, "(default)");
+
+const CONFIG_DOC = doc(db, "account", "veloraola");
+
+// Session and user data
+let currentUser = null;
+let userData = null;
+let payConfig = null;
+
+/* ---- LOAD PAYMENT CONFIG ---- */
+async function loadPayConfig(){
+  try {
+    const snap = await getDoc(CONFIG_DOC);
+    payConfig = snap.exists() ? snap.data() : {};
+  } catch (err) {
+    console.error("Error loading payment config:", err);
+    payConfig = {};
+  }
+  return payConfig;
+}
+
+/* ---- INITIALS ---- */
+function getInitials(fullName){
+  const parts = (fullName || "").trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return "?";
+  const first = parts[0][0];
+  const last  = parts.length > 1 ? parts[parts.length - 1][0] : "";
+  return (first + last).toUpperCase();
+}
+
+/* ---- CHECK SESSION ---- */
+function checkSession(){
+  const session = JSON.parse(localStorage.getItem("veloraSession") || "{}");
+  if(!session.loggedIn || !session.email){
+    window.location.href = "register.html";
+    return null;
+  }
+  return session;
+}
+
+/* ---- LOAD USER DATA FROM FIRESTORE ---- */
+async function loadUserData(email){
+  try {
+    const userDoc = doc(db, "velorausers", email);
+    const snap = await getDoc(userDoc);
+
+    if(!snap.exists()){
+      // User not found, logout
+      localStorage.removeItem("veloraSession");
+      window.location.href = "register.html";
+      return null;
+    }
+
+    return snap.data();
+  } catch (err) {
+    console.error("Error loading user data:", err);
+    return null;
+  }
+}
+
+/* ---- LOAD DASHBOARD ---- */
+async function loadDashboard(){
+  const session = checkSession();
+  if(!session) return;
+
+  // Show loading
+  document.getElementById("dashLoader").style.display = "flex";
+
+  const [data] = await Promise.all([
+    loadUserData(session.email),
+    loadPayConfig()
+  ]);
+  if(!data) return;
+
+  userData = data;
+  currentUser = session;
+
+  // Populate dashboard
+  document.getElementById("dashName").textContent = data.fullName;
+  document.getElementById("menuUserName").textContent = data.fullName;
+  document.getElementById("menuUserTier").innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8L5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>' + data.planName;
+
+  const initials = getInitials(data.fullName);
+  document.getElementById("headerProfile").textContent = initials;
+  document.getElementById("menuAvatar").textContent = initials;
+
+  // Show earnings (placeholder for now)
+  const earnings = data.planName === "Velora Gold" ? 17500 : 10500;
+  document.getElementById("mainBalance").textContent = "₦" + earnings.toLocaleString("en-NG");
+
+  // Update activation status
+  const statusBtn = document.getElementById("activationStatusBtn");
+  const activateBtn = document.getElementById("activateAccountBtn");
+
+  const ICON_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1.5 14.5l-4-4 1.4-1.4 2.6 2.6 6.1-6.1 1.4 1.4z"/></svg>';
+  const ICON_LOCK  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm-3 8V6a3 3 0 016 0v3H9zm3 4a2 2 0 012 2c0 .74-.4 1.39-1 1.73V19h-2v-2.27c-.6-.34-1-.99-1-1.73a2 2 0 012-2z"/></svg>';
+
+  if(data.activated){
+    statusBtn.classList.add("is-active");
+    statusBtn.innerHTML = '<span class="status-dot"></span>Activated';
+    activateBtn.innerHTML = ICON_CHECK + "Account Active";
+    activateBtn.style.background = "linear-gradient(135deg,#1a7a4a,#25a060)";
+    activateBtn.disabled = true;
+  } else {
+    statusBtn.classList.remove("is-active");
+    statusBtn.innerHTML = '<span class="status-dot"></span>Not Activated';
+    activateBtn.innerHTML = ICON_LOCK + "Activate Your Account";
+    activateBtn.style.background = "linear-gradient(135deg,#1a0033,#2b0052)";
+    activateBtn.disabled = false;
+  }
+
+  // Date
+  const now = new Date();
+  document.getElementById("liveDate").textContent = now.toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+
+  // Hide loader
+  document.getElementById("dashLoader").style.display = "none";
+  document.getElementById("nextelDashboard").classList.add("is-ready");
+}
+
+/* ---- GO TO PAYMENT ---- */
+async function goToPayment(){
+  if(!userData) return;
+  if(userData.activated){
+    alert("Your account is already activated!");
+    return;
+  }
+
+  const session = checkSession();
+  if(!session) return;
+
+  if(payConfig && payConfig.usePaymentLink){
+    const payLink = payConfig.paymentLink1;
+    if(payLink && payLink.startsWith("http")){
+      window.location.href = payLink;
+    } else {
+      alert("Payment link is not configured. Please contact support.");
+    }
+    return;
+  }
+
+  sessionStorage.setItem("velora_payment", JSON.stringify({
+    fullName: userData.fullName,
+    email: userData.email,
+    phone: userData.phone,
+    planName: userData.planName,
+    amount: userData.activationAmount
+  }));
+  window.location.href = "payment.html";
+}
+
+/* ---- LOGOUT ---- */
+function logoutUser(){
+  localStorage.removeItem("veloraSession");
+  closeMenu();
+  window.location.href = "register.html";
+}
+
+/* ---- MENU ---- */
+function openMenu(){ document.getElementById("sideMenu").classList.add("active"); document.getElementById("menuOverlay").style.display="block"; }
+function closeMenu(){ document.getElementById("sideMenu").classList.remove("active"); document.getElementById("menuOverlay").style.display="none"; }
+
+/* ---- BALANCE TOGGLE ---- */
+let balanceHidden = false;
+function toggleBalance(){
+  const el = document.getElementById("mainBalance");
+  balanceHidden = !balanceHidden;
+  if(balanceHidden){ el.textContent = "₦••••••"; return; }
+  const earnings = userData?.planName === "Velora Gold" ? 17500 : 10500;
+  el.textContent = "₦" + earnings.toLocaleString("en-NG");
+}
+
+/* ---- ACTIVATION POPUP ---- */
+function openActivation(){
+  closeMenu();
+  if(!userData) return;
+  if(userData.activated){
+    alert("Your account is already activated!");
+    return;
+  }
+  const amount = userData.activationAmount || 14500;
+  const fmt = "₦" + Number(amount).toLocaleString("en-NG");
+  document.getElementById("popupText").textContent = `You have a ${fmt} earning balance waiting. To withdraw funds and unlock all income streams, complete your one-time ${userData.planName} activation.`;
+  document.getElementById("activateBtn").textContent = `Activate Now — ${fmt}`;
+  document.getElementById("nextelPopup").style.display="flex";
+  document.body.style.overflow="hidden";
+}
+
+function closePopup(e){ if(e.target.id==="nextelPopup"){ document.getElementById("nextelPopup").style.display="none"; document.body.style.overflow="auto"; } }
+
+/* ---- CONTACT SUPPORT ---- */
+function contactSupport(){
+  closeMenu();
+  const link = (payConfig && payConfig.telegramLink) || "https://t.me/veloraacademy";
+  window.open(link, "_blank");
+}
+
+/* ---- WITHDRAWAL ---- */
+function openWithdrawal(){
+  if(!userData) return;
+  if(!userData.activated){
+    alert("Please activate your account first to withdraw funds.");
+    return;
+  }
+  alert("Withdrawal page coming soon!");
+}
+
+/* ---- PROFILE ---- */
+function openProfile(){ closeMenu(); alert("Profile page coming soon"); }
+
+/* ---- DASHBOARD MUSIC ---- */
+const dashMusic = document.getElementById("dashMusic");
+const musicToggle = document.getElementById("musicToggle");
+const musicIcon = document.getElementById("musicIcon");
+const musicBar = document.getElementById("musicBar");
+
+function startDashMusic(){
+  dashMusic.play().catch(()=>{});
+  musicIcon.innerHTML = '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
+}
+
+musicToggle.addEventListener("click",()=>{
+  if(dashMusic.paused){
+    dashMusic.play();
+    musicIcon.innerHTML = '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
+  } else {
+    dashMusic.pause();
+    musicIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+  }
+});
+dashMusic.addEventListener("timeupdate",()=>{
+  if(dashMusic.duration){ musicBar.style.width = (dashMusic.currentTime/dashMusic.duration*100)+"%"; }
+});
+
+/* ---- INIT ---- */
+document.addEventListener("DOMContentLoaded", () => {
+  // Show dashboard
+  document.getElementById("nextelDashboard").style.display = "block";
+  loadDashboard();
+  
+  // Start music
+  setTimeout(startDashMusic, 500);
+  
+  // Activation popup button
+  document.getElementById("activateBtn").onclick = function() {
+    this.textContent = "Processing...";
+    this.disabled = true;
+    goToPayment();
+    setTimeout(() => { 
+      this.textContent = "Activate Now"; 
+      this.disabled = false; 
+    }, 2000);
+  };
+});
+
+/* ---- MAKE FUNCTIONS GLOBAL FOR HTML ONCLICK ---- */
+window.goToPayment = goToPayment;
+window.logoutUser = logoutUser;
+window.openMenu = openMenu;
+window.closeMenu = closeMenu;
+window.openActivation = openActivation;
+window.closePopup = closePopup;
+window.contactSupport = contactSupport;
+window.openWithdrawal = openWithdrawal;
+window.openProfile = openProfile;
+window.toggleBalance = toggleBalance;
+</script>
+
+</body>
+</html>
