@@ -571,40 +571,11 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey:            "AIzaSyDrnmtx0LkfMKytzTKQZwXCg1JKZXiJmtU",
-  authDomain:        "glamour-28049.firebaseapp.com",
-  projectId:         "glamour-28049",
-  storageBucket:     "glamour-28049.firebasestorage.app",
-  messagingSenderId: "22177815395",
-  appId:             "1:22177815395:web:2ca7caa2b1626299675156"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app, "(default)");
-
-const CONFIG_DOC = doc(db, "account", "veloraola");
-
+<script>
 // Session and user data
 let currentUser = null;
 let userData = null;
-let payConfig = null;
-
-/* ---- LOAD PAYMENT CONFIG ---- */
-async function loadPayConfig(){
-  try {
-    const snap = await getDoc(CONFIG_DOC);
-    payConfig = snap.exists() ? snap.data() : {};
-  } catch (err) {
-    console.error("Error loading payment config:", err);
-    payConfig = {};
-  }
-  return payConfig;
-}
+let payConfig = {};
 
 /* ---- INITIALS ---- */
 function getInitials(fullName){
@@ -625,38 +596,26 @@ function checkSession(){
   return session;
 }
 
-/* ---- LOAD USER DATA FROM FIRESTORE ---- */
-async function loadUserData(email){
-  try {
-    const userDoc = doc(db, "velorausers", email);
-    const snap = await getDoc(userDoc);
-
-    if(!snap.exists()){
-      // User not found, logout
-      localStorage.removeItem("veloraSession");
-      window.location.href = "register.html";
-      return null;
-    }
-
-    return snap.data();
-  } catch (err) {
-    console.error("Error loading user data:", err);
+/* ---- LOAD USER DATA FROM LOCALSTORAGE ---- */
+function loadUserData(email){
+  const users = JSON.parse(localStorage.getItem("velora_users") || "[]");
+  const user = users.find((u) => u.email === email);
+  if(!user){
+    localStorage.removeItem("veloraSession");
+    window.location.href = "register.html";
     return null;
   }
+  return user;
 }
 
 /* ---- LOAD DASHBOARD ---- */
-async function loadDashboard(){
+function loadDashboard(){
   const session = checkSession();
   if(!session) return;
 
-  // Show loading
   document.getElementById("dashLoader").style.display = "flex";
 
-  const [data] = await Promise.all([
-    loadUserData(session.email),
-    loadPayConfig()
-  ]);
+  const data = loadUserData(session.email);
   if(!data) return;
 
   userData = data;
@@ -671,8 +630,8 @@ async function loadDashboard(){
   document.getElementById("headerProfile").textContent = initials;
   document.getElementById("menuAvatar").textContent = initials;
 
-  // Show earnings (placeholder for now)
-  const earnings = data.planName === "Velora Gold" ? 17500 : 10500;
+  // Show earnings
+  const earnings = data.planName === "Velora Gold" ? 12000 : 10500;
   document.getElementById("mainBalance").textContent = "₦" + earnings.toLocaleString("en-NG");
 
   // Update activation status
@@ -708,10 +667,28 @@ async function loadDashboard(){
   // Hide loader
   document.getElementById("dashLoader").style.display = "none";
   document.getElementById("nextelDashboard").classList.add("is-ready");
+
+  // Load payment config in background (non-blocking dynamic import)
+  import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js").then(({ initializeApp }) => {
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js").then(({ getFirestore, doc, getDoc }) => {
+      const app = initializeApp({
+        apiKey: "AIzaSyDrnmtx0LkfMKytzTKQZwXCg1JKZXiJmtU",
+        authDomain: "glamour-28049.firebaseapp.com",
+        projectId: "glamour-28049",
+        storageBucket: "glamour-28049.firebasestorage.app",
+        messagingSenderId: "22177815395",
+        appId: "1:22177815395:web:2ca7caa2b1626299675156"
+      });
+      const db = getFirestore(app, "(default)");
+      getDoc(doc(db, "account", "veloraola")).then((snap) => {
+        if(snap.exists()) payConfig = snap.data();
+      }).catch(() => {});
+    });
+  }).catch(() => {});
 }
 
 /* ---- GO TO PAYMENT ---- */
-async function goToPayment(){
+function goToPayment(){
   if(!userData) return;
   if(userData.activated){
     alert("Your account is already activated!");
@@ -758,7 +735,7 @@ function toggleBalance(){
   const el = document.getElementById("mainBalance");
   balanceHidden = !balanceHidden;
   if(balanceHidden){ el.textContent = "₦••••••"; return; }
-  const earnings = userData?.planName === "Velora Gold" ? 17500 : 10500;
+  const earnings = userData?.planName === "Velora Gold" ? 12000 : 10500;
   el.textContent = "₦" + earnings.toLocaleString("en-NG");
 }
 
@@ -826,21 +803,18 @@ dashMusic.addEventListener("timeupdate",()=>{
 
 /* ---- INIT ---- */
 document.addEventListener("DOMContentLoaded", () => {
-  // Show dashboard
   document.getElementById("nextelDashboard").style.display = "block";
   loadDashboard();
-  
-  // Start music
+
   setTimeout(startDashMusic, 500);
-  
-  // Activation popup button
+
   document.getElementById("activateBtn").onclick = function() {
     this.textContent = "Processing...";
     this.disabled = true;
     goToPayment();
-    setTimeout(() => { 
-      this.textContent = "Activate Now"; 
-      this.disabled = false; 
+    setTimeout(() => {
+      this.textContent = "Activate Now";
+      this.disabled = false;
     }, 2000);
   };
 });

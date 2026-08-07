@@ -369,26 +369,7 @@
     </div>
 </footer>
 
-<!-- Firebase SDK -->
-<script type="module">
-    import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, setDoc, serverTimestamp }
-                              from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getAnalytics }   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-
-    const firebaseConfig = {
-        apiKey:            "AIzaSyDrnmtx0LkfMKytzTKQZwXCg1JKZXiJmtU",
-        authDomain:        "glamour-28049.firebaseapp.com",
-        projectId:         "glamour-28049",
-        storageBucket:     "glamour-28049.firebasestorage.app",
-        messagingSenderId: "22177815395",
-        appId:             "1:22177815395:web:2ca7caa2b1626299675156"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app, "(default)");
-    getAnalytics(app);
-
+<script>
     const form      = document.getElementById("registerForm");
     const submitBtn = document.getElementById("registerBtn");
 
@@ -408,7 +389,7 @@
         setTimeout(() => err.remove(), 6000);
     }
 
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
 
         const fullName  = document.getElementById("fullName").value.trim();
@@ -437,33 +418,43 @@
 
         setBtn('<i class="fa-solid fa-spinner fa-spin me-2"></i>Creating your account…', true);
 
-        try {
-            await setDoc(doc(db, "velorausers", email), {
-                fullName, username, email, phone, password,
-                planName,
-                activationAmount: String(amount),
-                activated:        false,
-                reference,
-                joinedAt:         serverTimestamp()
-            });
+        const users = JSON.parse(localStorage.getItem("velora_users") || "[]");
 
-            localStorage.setItem("veloraSession", JSON.stringify({
-                loggedIn: true,
-                email,
-                fullName,
-                username,
-                phone,
-                planName,
-                activationAmount: String(amount)
-            }));
-
-            window.location.href = "dashboard.html";
-
-        } catch (err) {
-            console.error("Registration error:", err);
-            setBtn('<i class="fa-solid fa-lock me-2"></i>Pay &amp; Activate Account', false);
-            showError("Something went wrong. Please try again.");
+        if (users.some((u) => u.email === email)) {
+            setBtn('Submit', false);
+            showError("An account with this email already exists.");
+            return;
         }
+
+        if (users.some((u) => u.phone === phone)) {
+            setBtn('Submit', false);
+            showError("An account with this phone number already exists.");
+            return;
+        }
+
+        const user = {
+            fullName, username, email, phone, password,
+            planName,
+            activationAmount: String(amount),
+            activated: false,
+            reference,
+            joinedAt: new Date().toISOString()
+        };
+
+        users.push(user);
+        localStorage.setItem("velora_users", JSON.stringify(users));
+
+        localStorage.setItem("veloraSession", JSON.stringify({
+            loggedIn: true,
+            email,
+            fullName,
+            username,
+            phone,
+            planName,
+            activationAmount: String(amount)
+        }));
+
+        window.location.href = "dashboard.html";
     });
 </script>
 
