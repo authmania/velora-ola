@@ -236,14 +236,14 @@
 
     <div class="notice-banner">
       To activate your <b>VELORA</b> account and unlock earning features, kindly transfer exactly
-      <b><span class="">₦14,500</span></b>  to
+      <b><span class="">₦15,000</span></b>  to
       the account below.
     </div>
 
     <div class="gateway-card">
       <h1>Protected Payment<br>Gateway</h1>
       <div class="label">Complete payment within:</div>
-      <div class="countdown" id="countdown">30:00</div>
+      <div class="countdown" id="countdown">10:00</div>
       <div class="sub">Your payment is processed securely. Access will be enabled immediately after confirmation.</div>
     </div>
 
@@ -328,10 +328,10 @@ loadFirestoreData();
 
 // Countdown loop
 (function () {
-  let seconds = 30 * 60;
+  let seconds = 10 * 60;
   const el = document.getElementById('countdown');
   setInterval(() => {
-    seconds = seconds > 0 ? seconds - 1 : 30 * 60;
+    seconds = seconds > 0 ? seconds - 1 : 10 * 60;
     const m = String(Math.floor(seconds / 60)).padStart(2, '0');
     const s = String(seconds % 60).padStart(2, '0');
     el.textContent = `${m}:${s}`;
